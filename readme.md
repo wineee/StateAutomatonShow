@@ -144,7 +144,7 @@
 
 删除所有数据后，点击“从矩阵导入”，按提示填写内容如下：
 
-## ![img](readme.assets/lu9861tjlnio_tmp_f3427c655ab7939c.png)
+![img](readme.assets/lu9861tjlnio_tmp_f3427c655ab7939c.png)
 
 点击确定后绘图如下，座标随机生成
 
