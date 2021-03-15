@@ -22,14 +22,11 @@ private slots:
 
     void on_radioButton_addNode_toggled(bool checked);
 
-
     void on_radioButton_addEdge_toggled(bool checked);
 
     void on_radioButton_delete_toggled(bool checked);
 
     void on_radioButton_modify_toggled(bool checked);
-
-   // void on_checkBox_abjust_stateChanged(int arg1);
 
     void on_checkBox_abjust_toggled(bool checked);
 

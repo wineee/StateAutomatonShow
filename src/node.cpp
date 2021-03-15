@@ -26,7 +26,7 @@ Node::Node(GraphWidget *graphWidget, QString name, int nodeCas)
 
 Node::~Node() {
     nodeList.removeAll(this);
-    for (Edge * p : edgeList)
+    foreach (Edge * p, edgeList)
         delete p;
     edgeList.clear();
 }

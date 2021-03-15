@@ -45,7 +45,7 @@ private:
     QPointF newPos;
     GraphWidget *graph;
     QString m_nodeName;
-    int m_nodeCas;
+    int m_nodeCas; // 二进制 低1位表示是否为初态 低2位表示是否为终态
     static QVector<Node *> nodeList; // 全局记录所有点
 };
 

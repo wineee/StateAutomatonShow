@@ -12,7 +12,7 @@
 #include <QMessageBox>
 
 GraphWidget::GraphWidget(QWidget *parent)
-    : QGraphicsView(parent),tmpInitState(nullptr)
+    : QGraphicsView(parent)/*,tmpInitState(nullptr)*/
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -35,8 +35,8 @@ void GraphWidget::addNode(QString name, int Cas, qreal x, qreal y) {
 }
 
 void GraphWidget::addEdge(QString A, QString B, QString input, QString reInput) {
-    Node *nodeA, *nodeB;
-    for (Node * node : Node::getNodeList()) {
+    Node *nodeA = nullptr, *nodeB = nullptr;
+    foreach (Node * node, Node::getNodeList()) {
         if (node->getName() == A) {
             nodeA = node;
         }
@@ -51,7 +51,7 @@ void GraphWidget::addEdge(QString A, QString B, QString input, QString reInput) 
     this->scene()->addItem(new Edge(nodeA, nodeB, input, reInput));
 }
 
-void GraphWidget::setmode(int newMode) {
+void GraphWidget::setmode(QGRAPH_CAS newMode) {
     mode = newMode;
 }
 
@@ -60,47 +60,49 @@ void GraphWidget::setautoAdjust(int newAutoAdjust) {
 }
 
 void GraphWidget::mousePressEvent(QMouseEvent *event) {
-     switch (mode) {
-    case QGRAPH_ADDNODE: { // 添加点
+    switch (mode) {
+    case QGRAPH_CAS::ADDNODE: { // 添加点
         addNodeDlg dlg;
         if (dlg.exec() == QDialog::Accepted) {
             if (dlg.getName().isEmpty()) {
                  QMessageBox::warning(this, tr("警告"), tr("输入不能为空!"));
                  return;
             }
-            for (Node *tmp : Node::getNodeList())
+            foreach (Node *tmp, Node::getNodeList())
                 if (tmp->getName() == dlg.getName()) {
                     QMessageBox::warning(this, tr("警告"), tr("状态不能重复!"));
                     return;
                 }
             Node *node = new Node(this, dlg.getName(), dlg.getCas());
-            //nodeList.push_back(node);
-            if (dlg.getCas() & 1) {
-                 if (tmpInitState != nullptr) {
+            /*
+             * NFA不限制初态个数
+            if (dlg.getCas() & 1) { 
+                if (tmpInitState != nullptr) {
                     tmpInitState->setCas(tmpInitState->getCas() & 2);
                     tmpInitState->hide(); tmpInitState->show();
                 }
                 tmpInitState = node;
             }
+            */
             this->scene()->addItem(node);
             node->setPos(mapToScene(event->pos()));
         }
         break;
     }
-    case QGRAPH_ADDEDGE1: { // 添加边， 顶点1
+    case QGRAPH_CAS::ADDEDGE1: { // 添加边， 顶点1
         QGraphicsItem *item = itemAt(event->pos());
         if (item->type() == QGraphicsItem::UserType + 1) {
             tmpNode1 = qgraphicsitem_cast<Node *>(item);
-            qDebug() << "Edge 1 :";
-            mode = QGRAPH_ADDEDGE2;
+            qDebug() << "Get Edge 1 " << tmpNode1->getName();
+            mode = QGRAPH_CAS::ADDEDGE2;
         }
         break;
     }
-    case QGRAPH_ADDEDGE2: { // 添加边， 顶点2
+    case QGRAPH_CAS::ADDEDGE2: { // 添加边， 顶点2
         QGraphicsItem *item = itemAt(event->pos());
         if (item->type() == QGraphicsItem::UserType + 1) {
             tmpNode2 = qgraphicsitem_cast<Node *>(item);
-            qDebug() << "Edge 2 :";
+            qDebug() << "Get Edge 2 " << tmpNode2->getName();
             addEdgeDlg dlg(tmpNode1->getName(), tmpNode2->getName(), nullptr);
             if (dlg.exec() == QDialog::Accepted) {
                 if (dlg.getInputList().isEmpty()) {
@@ -111,16 +113,16 @@ void GraphWidget::mousePressEvent(QMouseEvent *event) {
                 scene()->addItem(newEdge);
                 newEdge->adjust();
             }
-            mode = QGRAPH_ADDEDGE1;
+            mode = QGRAPH_CAS::ADDEDGE1;
         }
         break;
     }
-    case QGRAPH_DELETE: { // 删除
+    case QGRAPH_CAS::DELETE: { // 删除
         QGraphicsItem *item = itemAt(event->pos());
         delete item;
         break;
     }
-    case QGRAPH_MODIFY: { // 修改
+    case QGRAPH_CAS::MODIFY: { // 修改
         QGraphicsItem *item = itemAt(event->pos());
         if (item->type() == QGraphicsItem::UserType + 1) { // 修改点
             Node *tmp = qgraphicsitem_cast<Node *>(item);
@@ -130,7 +132,7 @@ void GraphWidget::mousePressEvent(QMouseEvent *event) {
                     QMessageBox::warning(this, tr("警告"), tr("输入不能为空!"));
                     return;
                }
-               for (Node *t : Node::getNodeList())
+               foreach (Node *t, Node::getNodeList())
                    if (t->getName() == dlg.getName() && t != tmp) {
                        QMessageBox::warning(this, tr("警告"), tr("无效修改!"));
                        return;
@@ -138,13 +140,14 @@ void GraphWidget::mousePressEvent(QMouseEvent *event) {
                tmp->setName(dlg.getName());
                tmp->setCas(dlg.getCas());
                tmp->hide(); tmp->show();
+               /*
                if (dlg.getCas() & 1) {
                     if (tmpInitState != nullptr && tmpInitState != tmp) {
                        tmpInitState->setCas(tmpInitState->getCas() & 2);
                        tmpInitState->hide(); tmpInitState->show();
                    }
                    tmpInitState = tmp;
-               }
+               }*/
             }
         } else if (item->type() == QGraphicsItem::UserType + 2) {  // 修改边
             Edge *tmp = qgraphicsitem_cast<Edge *>(item);
@@ -157,7 +160,7 @@ void GraphWidget::mousePressEvent(QMouseEvent *event) {
         }
         break;
     }
-    case QGRAPH_MOVE:
+    case QGRAPH_CAS::MOVE:
     default:
         QGraphicsView::mousePressEvent(event);
     }

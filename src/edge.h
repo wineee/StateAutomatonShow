@@ -9,6 +9,7 @@ class Edge : public QGraphicsItem
 {
 public:
     Edge(Node *sourceNode, Node *destNode, QString inputListStr, QString reInputListStr = "");
+    // 起点 终点 正向的边注释 反向边注释
     ~Edge();
 
     Node *sourceNode() const;

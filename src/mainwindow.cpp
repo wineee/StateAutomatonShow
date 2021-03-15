@@ -27,31 +27,31 @@ MainWindow::~MainWindow()
 void MainWindow::on_radioButton_move_toggled(bool checked)
 {
     if (checked)
-        gwidget->setmode(QGRAPH_MOVE);
+        gwidget->setmode(QGRAPH_CAS::MOVE);
 }
 
 void MainWindow::on_radioButton_addNode_toggled(bool checked)
 {
     if (checked)
-        gwidget->setmode(QGRAPH_ADDNODE);
+        gwidget->setmode(QGRAPH_CAS::ADDNODE);
 }
 
 void MainWindow::on_radioButton_addEdge_toggled(bool checked)
 {
     if (checked)
-        gwidget->setmode(QGRAPH_ADDEDGE1);
+        gwidget->setmode(QGRAPH_CAS::ADDEDGE1);
 }
 
 void MainWindow::on_radioButton_delete_toggled(bool checked)
 {
     if (checked)
-        gwidget->setmode(QGRAPH_DELETE);
+        gwidget->setmode(QGRAPH_CAS::DELETE);
 }
 
 void MainWindow::on_radioButton_modify_toggled(bool checked)
 {
     if (checked)
-        gwidget->setmode(QGRAPH_MODIFY);
+        gwidget->setmode(QGRAPH_CAS::MODIFY);
 }
 
 void MainWindow::on_checkBox_abjust_toggled(bool checked)
@@ -62,7 +62,7 @@ void MainWindow::on_checkBox_abjust_toggled(bool checked)
 // 保存为文件
 void MainWindow::on_pushButton_toFile_clicked()
 {
-    QString filePath = QFileDialog::getSaveFileName(this,tr("保存文件"),"/home/rewine/文档/");
+    QString filePath = QFileDialog::getSaveFileName(this,tr("保存文件"),"/home/rew");
     qDebug()<<filePath;
     QFile file(filePath);
     if(!file.open(QIODevice::WriteOnly)) {
@@ -72,19 +72,19 @@ void MainWindow::on_pushButton_toFile_clicked()
 
     auto nodeList = Node::getNodeList();
     stream << nodeList.size() << "\n";
-    for (Node *node : nodeList) {
+    for (Node *node : qAsConst(nodeList)) {
        stream << node->getName() << " " << node->getCas() << " "
               << node->pos().x() << " " << node->pos().y() << "\n";
     }
     int cntEdge = 0;
-    for (Node *node : nodeList) {
-        for (const Edge *edge : node->edges()) {
+    foreach (const Node *node, qAsConst(nodeList)) {
+        foreach (const Edge *edge, node->edges()) {
             if (edge->sourceNode() == node) cntEdge++;
         }
     }
     stream << cntEdge << "\n";
-    for (Node *node : nodeList) {
-        for (const Edge *edge : node->edges()) {
+    foreach (Node *node, nodeList) {
+        foreach (const Edge *edge, node->edges()) {
             if (edge->sourceNode() == node) {
                 stream << edge->sourceNode()->getName() << " " << edge->destNode()->getName() << " "
                        << edge->getInputList() << " #" << edge->getReInputList() << "\n";
@@ -97,7 +97,7 @@ void MainWindow::on_pushButton_toFile_clicked()
 // 从文件导入
 void MainWindow::on_pushButton_fromFile_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this,tr("打开文件"),"/home/rewine/文档/");
+    QString filePath = QFileDialog::getOpenFileName(this,tr("打开文件"),"/home/rew");
     qDebug()<<filePath;
     QFile file(filePath);
     if(!file.open(QIODevice::ReadOnly)) {
@@ -135,6 +135,9 @@ void MainWindow::on_pushButton_fromMatrix_clicked()
 {
     MatrixDlg dlg(gwidget);
     if (dlg.exec() == QDialog::Accepted) {
+       auto nodeList = Node::getNodeList(); // 清空旧图
+       foreach (Node *node, nodeList)
+           delete node;
        dlg.Draw();
     }
 }

@@ -11,7 +11,7 @@ Edge::Edge(Node *sourceNode, Node *destNode, QString inputListStr, QString reInp
 {
     setAcceptedMouseButtons(Qt::NoButton); // 该类不需要接受鼠标的按钮事件
     source->addEdge(this);
-    if(source != dest)
+    if (source != dest)
        dest->addEdge(this);
     adjust();
 }
@@ -54,9 +54,10 @@ void Edge::adjust() {
     QLineF line(mapFromItem(source, 0, 0), mapFromItem(dest, 0, 0));
     qreal length = line.length();
 
-    prepareGeometryChange();
     // 可能改变 QGraphicsItem 大小或者形状的时候，QGraphicsItem 子类函数中先调用 prepareGeometryChange
+    prepareGeometryChange();
 
+    // 计算真正的端点，不是在圆心，而是在圆边上
     if (length > qreal(20.)) {
         QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
         sourcePoint = line.p1() + edgeOffset;

@@ -37,7 +37,7 @@ MatrixDlg::MatrixDlg(QVector<Node *> nodelist):
             s_final_state_set += (s_final_state_set.isEmpty()?"":",") + node->getName();
         }
 
-        for (const Edge *edge : node->edges()) {
+        foreach (const Edge *edge, node->edges()) {
             if (edge->sourceNode() == node) {
                 QStringList inputlist = edge->getInputList().split(',');
                 for (int i = 0; i < inputlist.size(); i++) {
@@ -59,8 +59,8 @@ MatrixDlg::MatrixDlg(QVector<Node *> nodelist):
     for (int i = 0; i < sl_state_set.size(); i++)
         model->setHeaderData(i, Qt::Vertical, sl_state_set[i]);
 
-    for (Node * node : nodelist) {
-        for (const Edge *edge : node->edges()) {
+    foreach (Node * node, nodelist) {
+        foreach (const Edge *edge, node->edges()) {
             if (edge->sourceNode() == node) {
                 int idRow = 0;
                 for (int i = 0; i < sl_state_set.size(); i++)
