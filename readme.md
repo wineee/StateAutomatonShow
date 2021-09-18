@@ -2,9 +2,7 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwineee%2FStateAutomatonShow.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwineee%2FStateAutomatonShow?ref=badge_shield)
 
 
-
-
-### 课程设计的要求
+### 设计的要求
 
 - 要求设计一个具有绘图功能的程序，可以手工以状态转换图的方式绘制自动机；
 - 图形化的自动机可以保存，读取；
@@ -37,7 +35,7 @@
 
 自动调整：
 
-- 此功能可以自动调整点的位置，使图形比较自然，实现方法参考了Qt的官方文档中的Elastic Nodes Example，核心算法是每个点间有斥力，与点到点的距离平方成正比，边有拉力，与边长的平方成正比。设置定时器，每隔一段时间计算每个点的受力情况，更新点的位置，当受力平衡时，图是舒展开的，较美观。
+》 此功能可以自动调整点的位置，使图形比较自然，实现方法参考了Qt的官方文档中的 Elastic Nodes Example，核心算法是每个点间有斥力，与点到点的距离平方成正比，边有拉力，与边长的平方成正比。设置定时器，每隔一段时间计算每个点的受力情况，更新点的位置，当受力平衡时，图是舒展开的，较美观。
 - 自定义实现了继承QGraphicsItem的Node类和Edge类，其中保存了点/边信息，比如点的名字，位置，边的起点，终点，注释（输入符号）等，并实现了绘制等相关功能。继承QGraphicsView的GraphWidget实现了对Node和Edge的管理，大部分交互响应（比如按键功能，添加点/边等）也是它实现的。
 
 ### 系统的类图
@@ -176,12 +174,12 @@
 开启自动调整
 
 
-
 ![img](readme.assets/lu9861tjlnio_tmp_f5dfef814eba545a.png)
 
-### Tip
-
-状态图边的注释（即输入符号），需要在边倾斜时也紧邻对应的边，但是文字只能输出在衡平竖直的方框里，我知道QTransform可以实现旋转，但结果于预期不同，后来查到QTransform是绕原点转的，我想让它绕特定点转，找了很久也没有找到改原点方法，后来才想到，可以通过整体平移把旋转中心移到原点，再旋转，再平移回去就可以了。2D绘图编程还是需要积累经验，如果不熟悉这些技巧，会浪费很多时间。
+### 参考资料
+[力导向图](https://zh.wikipedia.org/wiki/%E5%8A%9B%E5%AF%BC%E5%90%91%E5%9B%BE)
+[Elastic Nodes Example | Qt Widgets 5.15.6 - Qt Documentation](https://doc.qt.io/qt-5/qtwidgets-graphicsview-elasticnodes-example.html)
+[]
 
 ## License
 
