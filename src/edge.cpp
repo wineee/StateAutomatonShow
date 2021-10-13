@@ -59,7 +59,8 @@ void Edge::adjust() {
 
     // 计算真正的端点，不是在圆心，而是在圆边上
     if (length > qreal(20.)) {
-        QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
+        // 圆的半径为 10
+        QPointF edgeOffset(10 * line.dx() / length, 10 * line.dy() / length);
         sourcePoint = line.p1() + edgeOffset;
         destPoint = line.p2() - edgeOffset;
     } else {
@@ -79,7 +80,7 @@ QRectF Edge::boundingRect() const
     }
     return QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
                                       destPoint.y() - sourcePoint.y()))
-        .normalized()
+        .normalized() // 一般化，使边长 > 0
         .adjusted(-extra, -extra, extra, extra);
 }
 

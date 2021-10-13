@@ -26,8 +26,7 @@ Node::Node(GraphWidget *graphWidget, QString name, int nodeCas)
 
 Node::~Node() {
     nodeList.removeAll(this);
-    foreach (Edge * p, edgeList)
-        delete p;
+    qDeleteAll(edgeList);
     edgeList.clear();
 }
 
@@ -90,18 +89,19 @@ void Node::calculateForces()
         QPointF vec = mapToItem(node, 0, 0);
         qreal dx = vec.x();
         qreal dy = vec.y();
-        double l = 2.0 * (dx * dx + dy * dy);
+        double l = dx * dx + dy * dy;
+        const double K1 = 75.;
         if (l > 1e-7) {
-            xvel += (dx * 150.0) / l;
-            yvel += (dy * 150.0) / l;
+            xvel += (dx * K1) / l;
+            yvel += (dy * K1) / l;
         }
     }
 
     // 计算节点间聚集的力 节点间连线的长度决定聚集的力的大小
-    const int k = 30;
-    double weight = (edgeList.size() + 1) * k;
+    const int K2 = 30;
+    double weight = (edgeList.size() + 1) * K2;
     for (const Edge *edge : qAsConst(edgeList))
-        if (edge->sourceNode() == edge->destNode()) weight -= k; // 自环不影响
+        if (edge->sourceNode() == edge->destNode()) weight -= K2; // 自环不影响
     for (const Edge *edge : qAsConst(edgeList)) {
         if (edge->sourceNode() == edge->destNode()) continue;
         QPointF vec;
@@ -159,12 +159,12 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 
     painter->drawEllipse(-10, -10, 20, 20);
 
-    if (m_nodeCas & 1) { //
+    if (m_nodeCas & 1) { // 初态
         painter->setBrush(Qt::lightGray);
         painter->drawEllipse(-10, -10, 20, 20);
     }
 
-    if (m_nodeCas & 2) {
+    if (m_nodeCas & 2) { // 终态
        painter->drawEllipse(-7, -7, 14, 14);
     }
 
