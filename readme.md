@@ -176,9 +176,8 @@
 ![img](readme.assets/lu9861tjlnio_tmp_f5dfef814eba545a.png)
 
 ### 参考资料
-[力导向图](https://zh.wikipedia.org/wiki/%E5%8A%9B%E5%AF%BC%E5%90%91%E5%9B%BE)
-[Elastic Nodes Example | Qt Widgets 5.15.6 - Qt Documentation](https://doc.qt.io/qt-5/qtwidgets-graphicsview-elasticnodes-example.html)
-[]
+- [力导向图](https://zh.wikipedia.org/wiki/%E5%8A%9B%E5%AF%BC%E5%90%91%E5%9B%BE)
+- [Elastic Nodes Example | Qt Widgets 5.15.6 - Qt Documentation](https://doc.qt.io/qt-5/qtwidgets-graphicsview-elasticnodes-example.html)
 
 ## License
 
